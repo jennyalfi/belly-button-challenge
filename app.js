@@ -1,10 +1,25 @@
-// 1. Use the D3 library to read in samples.json
-// 2. Create a horizontal bar chart with a dropdown menu to display
+// 1.) Use the D3 library to read in samples.json
+
+// 2.) Create a horizontal bar chart with a dropdown menu to display
 // the top 10 OTUs found in that individual. (Sort & slice)
 // Use sample_values as the values for the bar chart.
 // Use otu_ids as the labels for the bar chart.
 // Use otu_labels as the hovertext for the chart.
 
+// 3.) Create a bubble chart that displays each sample.
+// Use otu_ids for the x values.
+// Use sample_values for the y values.
+// Use sample_values for the marker size.
+// Use otu_ids for the marker colors.
+// Use otu_labels for the text values.
+
+// 4.) Display the sample metadata, i.e., an individual's demographic information.
+
+// 5.) Display each key-value pair from the metadata JSON object somewhere on the page.
+
+// 6.) Update all the plots when a new sample is selected.
+
+// 7.) Deploy your app to a free static page hosting service, such as GitHub Pages.
 
 
 // Create function
@@ -56,39 +71,101 @@ function charts(sampleID) {
         let samplesResult = samplesArray[0];
 
        
-        
+// 2.) Create a horizontal bar chart with a dropdown menu to display
+// the top 10 OTUs found in that individual. (Sort & slice)
+// Use sample_values as the values for the bar chart.
+// Use otu_ids as the labels for the bar chart.
+// Use otu_labels as the hovertext for the chart.
 
 
+    let sampleValues = samplesResult.sample_values.slice(0, 10).reverse();
+    let otuIDs = samplesResult.otu_ids.slice(0, 10).map((id) => `OTU ${id}`).reverse();
+    let otuLabels = samplesResult.otu_labels.slice(0, 10).reverse();
+
+    let trace1 = {
+      x: sampleValues,
+      y: otuIDs,
+      text: otuLabels,
+      name: "OTU",
+      type: "bar",
+      orientation: "h"
+    };
+
+    let dataBar = [trace1];
+
+    let layoutBar = {
+      title: "Top 10 OTU's Found in Individual",
+      margin: {
+        l: 100,
+        r: 100,
+        t: 100,
+        b: 100
+      }
+    };
+
+    Plotly.newPlot("bar", dataBar, layoutBar);
+ 
+
+// 3.) Create a bubble chart that displays each sample.
+// Use otu_ids for the x values.
+// Use sample_values for the y values.
+// Use sample_values for the marker size.
+// Use otu_ids for the marker colors.
+// Use otu_labels for the text values.
 
 
+let trace2 = {
+    x: samplesResult.otu_ids,
+    y: samplesResult.sample_values,
+    text: samplesResult.otu_labels,
+    mode: 'markers',
+    marker: {
+      size: samplesResult.sample_values,
+      color: samplesResult.otu_ids,
+      colorscale: 'Picnic'
+    }
+  };
 
-        var data = [
-            {
+  let dataBubble = [trace2];
+
+  let layoutBubble = {
+    title: "OTU's per Sample",
+    xaxis: { title: "OTU ID" },
+    showlegend: false,
+    height: 600,
+    width: 1200
+  };
+
+  Plotly.newPlot("bubble", dataBubble, layoutBubble);
+;
+
+
+// GAUGE CHART: Advanced Challenge Assignment (Optional)
+// Adapt the Gauge Chart from https://plot.ly/javascript/gauge-charts/Links to an external site. to plot the weekly washing frequency of the individual.
+// You will need to modify the example gauge code to account for values ranging from 0 through 9.
+// Update the chart whenever a new sample is selected.
+
+        let trace3 = {
               type: "indicator",
               mode: "gauge+number+delta",
               value: washfreq,
-              title: { text: "Speed", font: { size: 24 } },
-              delta: { reference: 400, increasing: { color: "RebeccaPurple" } },
+              title: { text: "Belly Button Washing Frequency", font: { size: 24 } },
               gauge: {
-                axis: { range: [null, 500], tickwidth: 1, tickcolor: "darkblue" },
+                axis: { range: [null, 9], tickwidth: 1, tickcolor: "darkblue" },
                 bar: { color: "darkblue" },
                 bgcolor: "white",
                 borderwidth: 2,
                 bordercolor: "gray",
                 steps: [
-                  { range: [0, 250], color: "cyan" },
-                  { range: [250, 400], color: "royalblue" }
-                ],
-                threshold: {
-                  line: { color: "red", width: 4 },
-                  thickness: 0.75,
-                  value: 490
-                }
+                  { range: [0, 5], color: "cyan" },
+                  { range: [5, 9], color: "royalblue" }
+                ]
               }
             }
-          ];
           
-          var layout = {
+          
+          let dataGauge = [trace3];
+          let layoutGauge = {
             width: 500,
             height: 400,
             margin: { t: 25, r: 25, l: 25, b: 25 },
@@ -96,109 +173,7 @@ function charts(sampleID) {
             font: { color: "darkblue", family: "Arial" }
           };
           
-          Plotly.newPlot('gauge', data, layout);
+          Plotly.newPlot('gauge', dataGauge, layoutGauge);
           
-
-    })
-
-}
-// On change to the DOM, call getData()
-// d3.selectAll("#selDataset").on("change", getData);
-
-// // Function called by DOM changes
-// function getData() {
-//   let dropdownMenu = d3.select("#selDataset");
-//   // Assign the value of the dropdown menu option to a letiable
-//   let dataset = dropdownMenu.property("sample_values");
-//   // Initialize an empty array
-//   let data = [];
-
-// // Call function to update the chart
-//   updatePlotly(data);
-// }
-
-// // Update the restyled plot's values
-// function updatePlotly(newdata) {
-//   Plotly.restyle("bar", "sample_values", [otu_ids]);
-// }
-
-
-
-// // Sort the data by OTUs descending
-// let sortedByOTUs = data.sort((a, b) => b.names - a.names);
-
-// // Slice the first 10 objects for plotting
-// let slicedData = sortedByOTUs.slice(0, 10);
-
-// // Reverse the array to accommodate Plotly's defaults
-// let reversedData = slicedData.reverse();
-
-// // Trace1 for the OTU Data
-// let trace1 = {
-//   x: reversedData.map(object => object.sample_values),
-//   y: reversedData.map(object => object.names),
-//   text: reversedData.map(object => object.names),
-//   name: "OTU",
-//   type: "bar",
-//   orientation: "h"
-// };
-
-// // Data array
-// // `data` has already been defined, so we must choose a new name here:
-// let traceData = [trace1];
-
-// // Apply a title to the layout
-// let layout = {
-//   title: "10 OTUs found in individual",
-//   margin: {
-//     l: 100,
-//     r: 100,
-//     t: 100,
-//     b: 100
-//   }
-// };
-
-// // Render the plot to the div tag with id "plot"
-// // Note that we use `traceData` here, not `data`
-// Plotly.newPlot("plot", traceData, layout);
-
-// // 3.) Create a bubble chart that displays each sample.
-// // Use otu_ids for the x values.
-// // Use sample_values for the y values.
-// // Use sample_values for the marker size.
-// // Use otu_ids for the marker colors.
-// // Use otu_labels for the text values.
-
-// // Create a custom function to display each sample
-// function eachSample(roman) {
-//     return roman.romanSearchResults > 100000000;
-//   }
-
-//   // Call the custom function with filter()
-//   let popularRomans = data.filter(popular);
-
-//   // Trace for the Roman Data
-//   let trace1 = {
-//       x: eachSample.map(row => row.otu_ids),
-//       y: eachSample.map(row => row.sample_values),
-//       type: "markers"
-//   };
-
-//   // Data trace array
-//   let traceData = [trace1];
-
-//   // Apply title to the layout
-//   let layout = {
-//     title: "Samples"
-//   };
-
-//   // Render the plot to the div tag with id "plot"
-//   Plotly.newPlot("plot", traceData, layout);
-
-// 4.) Display the sample metadata, i.e., an individual's demographic information.
-// 5.) Display each key-value pair from the metadata JSON object somewhere on the page.
-
-// 6.) Update all the plots when a new sample is selected.
-
-// 7.) Deploy your app to a free static page hosting service, such as GitHub Pages.
-// Submit the links to your deployment and your GitHub repo.
+        });
+    }
