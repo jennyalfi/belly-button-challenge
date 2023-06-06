@@ -19,10 +19,7 @@
 
 // 6.) Update all the plots when a new sample is selected.
 
-// 7.) Deploy your app to a free static page hosting service, such as GitHub Pages.
-
-
-// Create function
+// Use the D3 library to read in samples.json
 function initSetup() {
   let dropDownMenu = d3.select("#selDataset");
   d3.json("samples.json").then((data) => {
@@ -43,6 +40,7 @@ function optionChanged(newID) {
 }
 initSetup();
 
+// Display the sample metadata, i.e., an individual's demographic information.
 function demoTable(sampleID) {
     d3.json("samples.json").then((data) => {
 
@@ -59,6 +57,7 @@ function demoTable(sampleID) {
     })
 
 }
+// Charts setup
 function charts(sampleID) {
     d3.json("samples.json").then((data) => {
         let meta = data.metadata;
@@ -71,12 +70,7 @@ function charts(sampleID) {
         let samplesResult = samplesArray[0];
 
        
-// 2.) Create a horizontal bar chart with a dropdown menu to display
-// the top 10 OTUs found in that individual. (Sort & slice)
-// Use sample_values as the values for the bar chart.
-// Use otu_ids as the labels for the bar chart.
-// Use otu_labels as the hovertext for the chart.
-
+// Create a horizontal bar chart 
 
     let sampleValues = samplesResult.sample_values.slice(0, 10).reverse();
     let otuIDs = samplesResult.otu_ids.slice(0, 10).map((id) => `OTU ${id}`).reverse();
@@ -94,11 +88,11 @@ function charts(sampleID) {
     let dataBar = [trace1];
 
     let layoutBar = {
-      title: "Top 10 OTU's Found in Individual",
+      title: "Top 10 Microbial Species (OTU's) <br> Found in Individual",
       margin: {
-        l: 100,
-        r: 100,
-        t: 100,
+        l: 120,
+        r: 80,
+        t: 80,
         b: 100
       }
     };
@@ -106,13 +100,7 @@ function charts(sampleID) {
     Plotly.newPlot("bar", dataBar, layoutBar);
  
 
-// 3.) Create a bubble chart that displays each sample.
-// Use otu_ids for the x values.
-// Use sample_values for the y values.
-// Use sample_values for the marker size.
-// Use otu_ids for the marker colors.
-// Use otu_labels for the text values.
-
+// Create a bubble chart that displays each sample.
 
 let trace2 = {
     x: samplesResult.otu_ids,
@@ -129,7 +117,7 @@ let trace2 = {
   let dataBubble = [trace2];
 
   let layoutBubble = {
-    title: "OTU's per Sample",
+    title: "Microbial Species (OTU's) per Sample",
     xaxis: { title: "OTU ID" },
     showlegend: false,
     height: 600,
@@ -138,7 +126,6 @@ let trace2 = {
 
   Plotly.newPlot("bubble", dataBubble, layoutBubble);
 ;
-
 
 // GAUGE CHART: Advanced Challenge Assignment (Optional)
 // Adapt the Gauge Chart from https://plot.ly/javascript/gauge-charts/Links to an external site. to plot the weekly washing frequency of the individual.
@@ -149,20 +136,18 @@ let trace2 = {
               type: "indicator",
               mode: "gauge+number+delta",
               value: washfreq,
-              title: { text: "Belly Button Washing Frequency", font: { size: 24 } },
+              title: { text: "Belly Button Washing Frequency <br> Scrubs per Week", font: { size: 20 }},
               gauge: {
-                axis: { range: [null, 9], tickwidth: 1, tickcolor: "darkblue" },
-                bar: { color: "darkblue" },
+                axis: { range: [null, 9], tickwidth: 1, tickcolor: "black" },
+                bar: { color: "black" },
                 bgcolor: "white",
                 borderwidth: 2,
                 bordercolor: "gray",
                 steps: [
-                  { range: [0, 5], color: "cyan" },
-                  { range: [5, 9], color: "royalblue" }
+                  { range: [0, 9], color: "pink" },
                 ]
               }
             }
-          
           
           let dataGauge = [trace3];
           let layoutGauge = {
@@ -170,7 +155,7 @@ let trace2 = {
             height: 400,
             margin: { t: 25, r: 25, l: 25, b: 25 },
             paper_bgcolor: "lavender",
-            font: { color: "darkblue", family: "Arial" }
+            font: { color: "black", family: "Arial" }
           };
           
           Plotly.newPlot('gauge', dataGauge, layoutGauge);
