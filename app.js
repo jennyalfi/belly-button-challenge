@@ -71,7 +71,6 @@ function charts(sampleID) {
 
        
 // Create a horizontal bar chart 
-
     let sampleValues = samplesResult.sample_values.slice(0, 10).reverse();
     let otuIDs = samplesResult.otu_ids.slice(0, 10).map((id) => `OTU ${id}`).reverse();
     let otuLabels = samplesResult.otu_labels.slice(0, 10).reverse();
@@ -101,7 +100,6 @@ function charts(sampleID) {
  
 
 // Create a bubble chart that displays each sample.
-
 let trace2 = {
     x: samplesResult.otu_ids,
     y: samplesResult.sample_values,
